@@ -56,11 +56,6 @@ func (l *linuxSetnsInit) Init() error {
 			return err
 		}
 	}
-	if l.config.NoNewPrivileges {
-		if err := unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0); err != nil {
-			return err
-		}
-	}
 	if err := selinux.SetExecLabel(l.config.ProcessLabel); err != nil {
 		return err
 	}
@@ -78,6 +73,11 @@ func (l *linuxSetnsInit) Init() error {
 	}
 	if err := apparmor.ApplyProfile(l.config.AppArmorProfile); err != nil {
 		return err
+	}
+	if l.config.NoNewPrivileges {
+		if err := unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0); err != nil {
+			return err
+		}
 	}
 	// Set seccomp as close to execve as possible, so as few syscalls take
 	// place afterward (reducing the amount of syscalls that users need to
