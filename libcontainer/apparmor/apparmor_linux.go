@@ -49,9 +49,9 @@ func setProcAttr(attr, value string) error {
 	return err
 }
 
-// changeOnExec reimplements aa_change_onexec from libapparmor in Go
-func changeOnExec(name string) error {
-	if err := setProcAttr("exec", "exec "+name); err != nil {
+// changeProfile reimplements aa_change_profile from libapparmor in Go
+func changeProfile(name string) error {
+	if err := setProcAttr("current", "changeprofile "+name); err != nil {
 		return fmt.Errorf("apparmor failed to apply profile: %s", err)
 	}
 	return nil
@@ -65,5 +65,5 @@ func applyProfile(name string) error {
 		return nil
 	}
 
-	return changeOnExec(name)
+	return changeProfile(name)
 }
